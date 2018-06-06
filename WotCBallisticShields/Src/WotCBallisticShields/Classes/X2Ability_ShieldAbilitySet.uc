@@ -4,10 +4,47 @@ static function array<X2DataTemplate> CreateTemplates()
 {
 	local array<X2DataTemplate> Templates;
 	
+	Templates.AddItem(BallisticShield());
 	Templates.AddItem(ShieldBash());
 	Templates.AddItem(ShieldAnimSet());
 	
 	return Templates;
+}
+
+static function X2AbilityTemplate BallisticShield(int ShieldHPAmount = 4)
+{
+	local X2AbilityTemplate Template;
+	local X2Effect_EnergyShield ShieldedEffect;
+	local X2Effect_GenerateCover CoverEffect;
+
+	`CREATE_X2ABILITY_TEMPLATE(Template, 'BallisticShield');
+	Template.IconImage = "img:///UILibrary_PerkIcons.UIPerk_adventshieldbearer_energyshield";
+
+	Template.AbilitySourceName = 'eAbilitySource_Perk';
+	Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_NeverShow;
+	Template.Hostility = eHostility_Neutral;
+
+	Template.AbilityToHitCalc = default.DeadEye;
+	Template.AbilityTargetStyle = default.SelfTarget;
+	Template.AbilityTriggers.AddItem(default.UnitPostBeginPlayTrigger);
+	
+	ShieldedEffect = new class'X2Effect_EnergyShield';
+	ShieldedEffect.BuildPersistentEffect(1, true, false, true, eGameRule_PlayerTurnBegin);
+	ShieldedEffect.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyHelpText(), Template.IconImage, true, , Template.AbilitySourceName);
+	ShieldedEffect.AddPersistentStatChange(eStat_ShieldHP, ShieldHPAmount);
+	Template.AddTargetEffect(ShieldedEffect);
+
+	CoverEffect = new class'X2Effect_GenerateCover';
+	CoverEffect.bRemoveWhenMoved = false;
+	CoverEffect.bRemoveOnOtherActivation = false;
+	CoverEffect.BuildPersistentEffect(1, true, false, false, eGameRule_PlayerTurnBegin);
+	CoverEffect.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyHelpText(), Template.IconImage, true, , Template.AbilitySourceName);
+	CoverEffect.CoverType = CoverForce_Low;
+	Template.AddTargetEffect(CoverEffect);
+
+	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
+
+	return Template;
 }
 
 static function X2AbilityTemplate ShieldBash()

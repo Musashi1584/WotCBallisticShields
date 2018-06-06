@@ -50,7 +50,8 @@ static function X2WeaponTemplate BallisticShield_CV()
 
 	Template.Abilities.AddItem('ShieldAnimSet');
 	Template.Abilities.AddItem('ShieldBash');
-
+	Template.Abilities.AddItem('BallisticShield');
+	
 	Template.CanBeBuilt = false;
 	Template.StartingItem = true;
 
