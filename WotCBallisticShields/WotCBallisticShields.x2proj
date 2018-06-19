@@ -5,7 +5,7 @@
     <Name>WotC Ballistic Shields</Name>
     <Description>Adds ballistic shields to to xcom 2
 
-tags = wotc, war of the chosen, weapon, item, shields</Description>
+tags=shields, weapon, item, tank, wotc, war of the chosen</Description>
     <SteamPublishID>0</SteamPublishID>
     <AssemblyName>WotCBallisticShields</AssemblyName>
     <RootNamespace>WotCBallisticShields</RootNamespace>
@@ -22,7 +22,13 @@ tags = wotc, war of the chosen, weapon, item, shields</Description>
     <Content Include="Config\XComClassData.ini">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="Config\XcomContent.ini">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="Config\XComGameData.ini">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Config\XComShields.ini">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Content\WoTC_Ballistic_Shield.upk">
@@ -40,6 +46,9 @@ tags = wotc, war of the chosen, weapon, item, shields</Description>
     <Content Include="Content\WoTC_Shield_UI.upk">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="Localization\WotCBallisticShields.int">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="ReadMe.txt" />
     <Content Include="ModPreview.jpg" />
     <Content Include="Config\XComEditor.ini" />
@@ -49,8 +58,17 @@ tags = wotc, war of the chosen, weapon, item, shields</Description>
     <Content Include="Src\WotCBallisticShields\Classes\X2Ability_ShieldAbilitySet.uc">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="Src\WotCBallisticShields\Classes\X2DataStructure_BallisticShields.uc">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="Src\WotCBallisticShields\Classes\X2DownloadableContentInfo_WotCBallisticShields.uc" />
+    <Content Include="Src\WotCBallisticShields\Classes\X2Effect_ShieldWall.uc">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="Src\WotCBallisticShields\Classes\X2Item_Shield.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\WotCBallisticShields\Classes\XGLocalizedData_BallisticShields.uc">
       <SubType>Content</SubType>
     </Content>
   </ItemGroup>

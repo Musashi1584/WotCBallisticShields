@@ -1,0 +1,3 @@
+class XGLocalizedData_BallisticShields extends Object;
+
+var localized string m_strCategoryRestricted;

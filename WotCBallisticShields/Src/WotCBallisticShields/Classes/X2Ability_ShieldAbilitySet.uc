@@ -1,23 +1,58 @@
-class X2Ability_ShieldAbilitySet extends X2Ability config(GameData_WeaponData);
+class X2Ability_ShieldAbilitySet extends X2Ability config(Shields);
+
+var config int SHIELD_WALL_DODGE;
+var config int SHIELD_WALL_DEFENSE;
+
+var config int SHIELD_POINTS_CV;
+var config int SHIELD_POINTS_MG;
+var config int SHIELD_POINTS_BM;
 
 static function array<X2DataTemplate> CreateTemplates()
 {
 	local array<X2DataTemplate> Templates;
 	
-	Templates.AddItem(BallisticShield());
+	Templates.AddItem(ShieldWall());
+	Templates.AddItem(BallisticShield('BallisticShield_CV', default.SHIELD_POINTS_CV));
+	Templates.AddItem(BallisticShield('BallisticShield_MG', default.SHIELD_POINTS_MG));
+	Templates.AddItem(BallisticShield('BallisticShield_BM', default.SHIELD_POINTS_BM));
 	Templates.AddItem(ShieldBash());
 	Templates.AddItem(ShieldAnimSet());
 	
 	return Templates;
 }
 
-static function X2AbilityTemplate BallisticShield(int ShieldHPAmount = 4)
+static function X2AbilityTemplate ShieldWall()
+{
+	local X2AbilityTemplate Template;
+	local X2Effect_ShieldWall CoverEffect;
+
+	Template = class'X2Ability_DefaultAbilitySet'.static.AddHunkerDownAbility('ShieldWall');
+
+	X2Condition_UnitProperty(Template.AbilityShooterConditions[0]).ExcludeNoCover = false;
+
+	X2Effect_PersistentStatChange(Template.AbilityTargetEffects[0]).m_aStatChanges[0].StatAmount = default.SHIELD_WALL_DODGE;
+	X2Effect_PersistentStatChange(Template.AbilityTargetEffects[0]).m_aStatChanges[1].StatAmount = default.SHIELD_WALL_DEFENSE;
+
+	CoverEffect = new class'X2Effect_ShieldWall';
+	CoverEffect.EffectName = 'ShieldWall';
+	CoverEffect.bRemoveWhenMoved = false;
+	CoverEffect.bRemoveOnOtherActivation = false;
+	CoverEffect.BuildPersistentEffect(1, false, false, false, eGameRule_PlayerTurnBegin);
+	CoverEffect.CoverType = CoverForce_High;
+	CoverEffect.DuplicateResponse = eDupe_Allow;
+	Template.AddTargetEffect(CoverEffect);
+
+	Template.OverrideAbilities.AddItem('HunkerDown');
+
+	return Template;
+}
+static function X2AbilityTemplate BallisticShield(name TemplateName, int ShieldHPAmount)
 {
 	local X2AbilityTemplate Template;
 	local X2Effect_EnergyShield ShieldedEffect;
 	local X2Effect_GenerateCover CoverEffect;
 
-	`CREATE_X2ABILITY_TEMPLATE(Template, 'BallisticShield');
+	`CREATE_X2ABILITY_TEMPLATE(Template, TemplateName);
 	Template.IconImage = "img:///UILibrary_PerkIcons.UIPerk_adventshieldbearer_energyshield";
 
 	Template.AbilitySourceName = 'eAbilitySource_Perk';
@@ -29,17 +64,19 @@ static function X2AbilityTemplate BallisticShield(int ShieldHPAmount = 4)
 	Template.AbilityTriggers.AddItem(default.UnitPostBeginPlayTrigger);
 	
 	ShieldedEffect = new class'X2Effect_EnergyShield';
-	ShieldedEffect.BuildPersistentEffect(1, true, false, true, eGameRule_PlayerTurnBegin);
+	ShieldedEffect.BuildPersistentEffect(1, true, false, true, eGameRule_TacticalGameStart);
 	ShieldedEffect.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyHelpText(), Template.IconImage, true, , Template.AbilitySourceName);
 	ShieldedEffect.AddPersistentStatChange(eStat_ShieldHP, ShieldHPAmount);
 	Template.AddTargetEffect(ShieldedEffect);
 
 	CoverEffect = new class'X2Effect_GenerateCover';
+	CoverEffect.EffectName = 'BallisticShield';
 	CoverEffect.bRemoveWhenMoved = false;
 	CoverEffect.bRemoveOnOtherActivation = false;
 	CoverEffect.BuildPersistentEffect(1, true, false, false, eGameRule_PlayerTurnBegin);
-	CoverEffect.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyHelpText(), Template.IconImage, true, , Template.AbilitySourceName);
+	//CoverEffect.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyHelpText(), Template.IconImage, true, , Template.AbilitySourceName);
 	CoverEffect.CoverType = CoverForce_Low;
+	CoverEffect.DuplicateResponse = eDupe_Allow;
 	Template.AddTargetEffect(CoverEffect);
 
 	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
@@ -53,6 +90,7 @@ static function X2AbilityTemplate ShieldBash()
 
 	Template = class'X2Ability_RangerAbilitySet'.static.AddSwordSliceAbility('ShieldBash');
 
+	Template.AddTargetEffect(class'X2StatusEffects'.static.CreateDisorientedStatusEffect(true, , false));
 	//Template.DefaultSourceItemSlot = eInvSlot_SecondaryWeapon;
 
 	return Template;
@@ -76,7 +114,7 @@ static function X2AbilityTemplate ShieldAnimSet()
 	
     AnimSets = new class'X2Effect_AdditionalAnimSets';
     AnimSets.EffectName = 'ShieldAnimSet';
-    AnimSets.AddAnimSetWithPath("AnimSet'WoTC_Shield_Animations.Anims.AS_Shield'");
+    //AnimSets.AddAnimSetWithPath("AnimSet'WoTC_Shield_Animations.Anims.AS_Shield'");
 	AnimSets.AddAnimSetWithPath("AnimSet'WoTC_Shield_Animations.Anims.AS_Shield_Grenade'");
 	AnimSets.AddAnimSetWithPath("AnimSet'WoTC_Shield_Animations.Anims.AS_Shield_Medkit'");
     AnimSets.BuildPersistentEffect(1, true, false, false, eGameRule_TacticalGameStart);
