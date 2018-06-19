@@ -185,15 +185,14 @@ static function UpdateAnimations(out array<AnimSet> CustomAnimSets, XComGameStat
 		}
 
 		CustomAnimSets.AddItem(AnimSet(`CONTENT.RequestGameArchetype("AnimSet'WoTC_Shield_Animations.Anims.AS_Shield_Armory'")));
-		CustomAnimSets.AddItem(AnimSet(`CONTENT.RequestGameArchetype("AnimSet'WoTC_Shield_Animations.Anims.AS_Shield'")));
-	}
-}
 
-static function AddAnimSet(XComUnitPawn Pawn, AnimSet AnimSetToAdd)
-{
-	if (Pawn.Mesh.AnimSets.Find(AnimSetToAdd) == INDEX_NONE)
-	{
-		Pawn.Mesh.AnimSets.AddItem(AnimSetToAdd);
-		//`LOG(GetFuncName() @ "adding" @ AnimSetToAdd,, 'RPG');
+		if (PrimaryWeaponTemplate.WeaponCat == 'sword')
+		{
+			CustomAnimSets.AddItem(AnimSet(`CONTENT.RequestGameArchetype("AnimSet'WoTC_Shield_Animations.Anims.AS_Shield_Melee'")));
+		}
+		else
+		{
+			CustomAnimSets.AddItem(AnimSet(`CONTENT.RequestGameArchetype("AnimSet'WoTC_Shield_Animations.Anims.AS_Shield'")));
+		}
 	}
 }
