@@ -88,6 +88,35 @@ static function AddHigherTiers(
 	}
 }
 
+static function WeaponInitialized(XGWeapon WeaponArchetype, XComWeapon Weapon, optional XComGameState_Item ItemState=none)
+{
+	local X2WeaponTemplate WeaponTemplate;
+	local XComGameState_Unit UnitState;
+
+	if (ItemState == none)
+	{
+		return;
+	}
+
+	UnitState = XComGameState_Unit(`XCOMHISTORY.GetGameStateForObjectID(ItemState.OwnerStateObject.ObjectID));
+	WeaponTemplate = X2WeaponTemplate(ItemState.GetMyTemplate());
+	
+	`LOG(default.Class.Name @ GetFuncName() @ "Spawn" @ WeaponArchetype @ ItemState.GetMyTemplateName() @ Weapon.CustomUnitPawnAnimsets.Length,, 'PrimarySecondaries');
+
+	// @TODO move this to the Shields mod
+	if (HasShieldEquipped(UnitState) && WeaponTemplate.InventorySlot == eInvSlot_PrimaryWeapon)
+	{
+		Weapon.DefaultSocket = 'R_Hand';
+	}
+}
+
+static function bool HasShieldEquipped(XComGameState_Unit UnitState, optional XComGameState CheckGameState)
+{
+	local X2WeaponTemplate SecondaryWeaponTemplate;
+	SecondaryWeaponTemplate = X2WeaponTemplate(UnitState.GetItemInSlot(eInvSlot_SecondaryWeapon, CheckGameState).GetMyTemplate());
+	return SecondaryWeaponTemplate.WeaponCat == 'shield';
+}
+
 static function bool CanAddItemToInventory_CH(out int bCanAddItem, const EInventorySlot Slot, const X2ItemTemplate ItemTemplate, int Quantity, XComGameState_Unit UnitState, optional XComGameState CheckGameState, optional out string DisabledReason)
 {
 	local X2WeaponTemplate			WeaponTemplate;
@@ -141,7 +170,6 @@ static function bool CanAddItemToInventory_CH(out int bCanAddItem, const EInvent
 	return bEvaluate;
 }
 
-
 static function UpdateAnimations(out array<AnimSet> CustomAnimSets, XComGameState_Unit UnitState, XComUnitPawn Pawn)
 {
 	local X2WeaponTemplate PrimaryWeaponTemplate, SecondaryWeaponTemplate;
@@ -157,6 +185,8 @@ static function UpdateAnimations(out array<AnimSet> CustomAnimSets, XComGameStat
 	
 	if (SecondaryWeaponTemplate.WeaponCat == 'shield')
 	{
+		`LOG(GetFuncName() @ UnitState.GetFullName() @ PrimaryWeaponTemplate.DataName @ SecondaryWeaponTemplate.DataName,, 'WotCBallisticShields');
+
 		switch (PrimaryWeaponTemplate.WeaponCat)
 		{
 			case 'rifle':
@@ -175,6 +205,7 @@ static function UpdateAnimations(out array<AnimSet> CustomAnimSets, XComGameStat
 				AnimSetToLoad = "AnimSet'WoTC_Shield_Animations.Anims.AS_Shield_SMG'";
 				break;
 			case 'sword':
+			case 'combatknife':
 				AnimSetToLoad = "AnimSet'WoTC_Shield_Animations.Anims.AS_Shield_Sword'";
 				break;
 		}
@@ -184,15 +215,15 @@ static function UpdateAnimations(out array<AnimSet> CustomAnimSets, XComGameStat
 			CustomAnimSets.AddItem(AnimSet(`CONTENT.RequestGameArchetype(AnimSetToLoad)));
 		}
 
-		CustomAnimSets.AddItem(AnimSet(`CONTENT.RequestGameArchetype("AnimSet'WoTC_Shield_Animations.Anims.AS_Shield_Armory'")));
+		CustomAnimSets.AddItem(AnimSet(`CONTENT.RequestGameArchetype("WoTC_Shield_Animations.Anims.AS_Shield_Armory")));
 
 		if (PrimaryWeaponTemplate.WeaponCat == 'sword')
 		{
-			CustomAnimSets.AddItem(AnimSet(`CONTENT.RequestGameArchetype("AnimSet'WoTC_Shield_Animations.Anims.AS_Shield_Melee'")));
+			CustomAnimSets.AddItem(AnimSet(`CONTENT.RequestGameArchetype("WoTC_Shield_Animations.Anims.AS_Shield_Melee")));
 		}
 		else
 		{
-			CustomAnimSets.AddItem(AnimSet(`CONTENT.RequestGameArchetype("AnimSet'WoTC_Shield_Animations.Anims.AS_Shield'")));
+			CustomAnimSets.AddItem(AnimSet(`CONTENT.RequestGameArchetype("WoTC_Shield_Animations.Anims.AS_Shield")));
 		}
 	}
 }

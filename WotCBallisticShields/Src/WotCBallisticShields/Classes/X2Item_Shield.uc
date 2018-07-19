@@ -71,6 +71,8 @@ static function X2WeaponTemplate BallisticShield_CV()
 
 	AddAbilities(Template, default.SHIELD_CV_ABILITIES);
 	
+	Template.SetUIStatMarkup(class'XLocalizedData'.default.MobilityLabel, eStat_Mobility, class'X2Ability_ShieldAbilitySet'.default.SHIELD_MOBILITY_PENALTY);
+
 	Template.CanBeBuilt = false;
 	Template.StartingItem = true;
 	Template.bInfiniteItem = true;
@@ -114,6 +116,8 @@ static function X2DataTemplate BallisticShield_MG()
 	Template.CreatorTemplateName = 'MediumPlatedArmor_Schematic'; // The schematic which creates this item
 	Template.BaseItem = 'BallisticShield_CV'; // Which item this will be upgraded from
 	
+	Template.SetUIStatMarkup(class'XLocalizedData'.default.MobilityLabel, eStat_Mobility, class'X2Ability_ShieldAbilitySet'.default.SHIELD_MOBILITY_PENALTY);
+
 	Template.CanBeBuilt = false;
 	Template.bInfiniteItem = true;
 
@@ -158,9 +162,11 @@ static function X2DataTemplate BallisticShield_BM()
 	Template.CreatorTemplateName = 'MediumPoweredArmor_Schematic'; // The schematic which creates this item
 	Template.BaseItem = 'BallisticShield_MG'; // Which item this will be upgraded from
 
+	Template.SetUIStatMarkup(class'XLocalizedData'.default.MobilityLabel, eStat_Mobility, class'X2Ability_ShieldAbilitySet'.default.SHIELD_MOBILITY_PENALTY);
+	
 	Template.CanBeBuilt = false;
 	Template.bInfiniteItem = true;
-
+	
 	Template.DamageTypeTemplateName = 'Melee';
 	
 	return Template;

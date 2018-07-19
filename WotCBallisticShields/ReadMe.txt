@@ -11,7 +11,7 @@ from Musashis classes the samurai, specops, infiltrator and rpgo can equip shiel
 Shield go in secondary item slot and will work with all primary weapons except cannons and sniper rifles for obvious reasons.
 The primary secondaries mod allows you to use shields with melee weapons and pistols.
 
-Shields grants 6/10/14 shield points and half cover to allies.
+Shields grants 6/10/14 shield points and half cover to allies but impose a -3 mobility penalty.
 
 Provides the Shield Wall ability that replaces hunker down.
 Works like hunker down but can be used outside cover and provide full cover for allies.
@@ -33,12 +33,9 @@ Musashi - Code
 A dedicated class that utilizes shields.
 Cutomizable decals on shields.
 
-[h1]Claus's Patreon:[/h1]
-
+[h1]Patreon:[/h1]
 https://www.patreon.com/Claus
-
-[h1]Musashi Donations[/h1]
-[url=https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=5PPVEBYPKGKBN]donate link[/url]
+https://www.patreon.com/musashi1584
 
 
 [h1]Mod troubleshooting[/h1]

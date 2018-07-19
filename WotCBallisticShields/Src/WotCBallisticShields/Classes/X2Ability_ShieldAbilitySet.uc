@@ -7,18 +7,20 @@ var config int SHIELD_POINTS_CV;
 var config int SHIELD_POINTS_MG;
 var config int SHIELD_POINTS_BM;
 
+var config int SHIELD_MOBILITY_PENALTY;
+
 static function array<X2DataTemplate> CreateTemplates()
 {
-	local array<X2DataTemplate> Templates;
+local array<X2DataTemplate> Templates;
 	
-	Templates.AddItem(ShieldWall());
-	Templates.AddItem(BallisticShield('BallisticShield_CV', default.SHIELD_POINTS_CV));
-	Templates.AddItem(BallisticShield('BallisticShield_MG', default.SHIELD_POINTS_MG));
-	Templates.AddItem(BallisticShield('BallisticShield_BM', default.SHIELD_POINTS_BM));
-	Templates.AddItem(ShieldBash());
-	Templates.AddItem(ShieldAnimSet());
+Templates.AddItem(ShieldWall());
+Templates.AddItem(BallisticShield('BallisticShield_CV', default.SHIELD_POINTS_CV));
+Templates.AddItem(BallisticShield('BallisticShield_MG', default.SHIELD_POINTS_MG));
+Templates.AddItem(BallisticShield('BallisticShield_BM', default.SHIELD_POINTS_BM));
+Templates.AddItem(ShieldBash());
+Templates.AddItem(ShieldAnimSet());
 	
-	return Templates;
+return Templates;
 }
 
 static function X2AbilityTemplate ShieldWall()
@@ -46,11 +48,13 @@ static function X2AbilityTemplate ShieldWall()
 
 	return Template;
 }
+
 static function X2AbilityTemplate BallisticShield(name TemplateName, int ShieldHPAmount)
 {
 	local X2AbilityTemplate Template;
 	local X2Effect_EnergyShield ShieldedEffect;
 	local X2Effect_GenerateCover CoverEffect;
+	local X2Effect_PersistentStatChange PersistentStatChangeEffect;
 
 	`CREATE_X2ABILITY_TEMPLATE(Template, TemplateName);
 	Template.IconImage = "img:///UILibrary_PerkIcons.UIPerk_adventshieldbearer_energyshield";
@@ -74,10 +78,15 @@ static function X2AbilityTemplate BallisticShield(name TemplateName, int ShieldH
 	CoverEffect.bRemoveWhenMoved = false;
 	CoverEffect.bRemoveOnOtherActivation = false;
 	CoverEffect.BuildPersistentEffect(1, true, false, false, eGameRule_PlayerTurnBegin);
-	//CoverEffect.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyHelpText(), Template.IconImage, true, , Template.AbilitySourceName);
 	CoverEffect.CoverType = CoverForce_Low;
 	CoverEffect.DuplicateResponse = eDupe_Allow;
 	Template.AddTargetEffect(CoverEffect);
+
+	PersistentStatChangeEffect = new class'X2Effect_PersistentStatChange';
+	PersistentStatChangeEffect.BuildPersistentEffect(1, true, false, false);
+	PersistentStatChangeEffect.AddPersistentStatChange(eStat_Mobility, default.SHIELD_MOBILITY_PENALTY);
+	Template.AddTargetEffect(PersistentStatChangeEffect);
+	Template.SetUIStatMarkup(class'XLocalizedData'.default.MobilityLabel, eStat_Mobility, default.SHIELD_MOBILITY_PENALTY);
 
 	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
 
