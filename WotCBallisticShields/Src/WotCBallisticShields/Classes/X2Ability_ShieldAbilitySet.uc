@@ -2,12 +2,14 @@ class X2Ability_ShieldAbilitySet extends X2Ability config(Shields);
 
 var config int SHIELD_WALL_DODGE;
 var config int SHIELD_WALL_DEFENSE;
+var config bool SHIELD_WALL_FREE_ACTION;
 
 var config int SHIELD_POINTS_CV;
 var config int SHIELD_POINTS_MG;
 var config int SHIELD_POINTS_BM;
 
 var config int SHIELD_MOBILITY_PENALTY;
+var config int SHIELD_AIM_PENALTY;
 
 static function array<X2DataTemplate> CreateTemplates()
 {
@@ -29,6 +31,12 @@ static function X2AbilityTemplate ShieldWall()
 	local X2Effect_ShieldWall CoverEffect;
 
 	Template = class'X2Ability_DefaultAbilitySet'.static.AddHunkerDownAbility('ShieldWall');
+
+	if (default.SHIELD_WALL_FREE_ACTION)
+	{
+		Template.AbilityCosts.Length = 0;
+		Template.AbilityCosts.AddItem(default.FreeActionCost);
+	}
 
 	X2Condition_UnitProperty(Template.AbilityShooterConditions[0]).ExcludeNoCover = false;
 
@@ -85,6 +93,7 @@ static function X2AbilityTemplate BallisticShield(name TemplateName, int ShieldH
 	PersistentStatChangeEffect = new class'X2Effect_PersistentStatChange';
 	PersistentStatChangeEffect.BuildPersistentEffect(1, true, false, false);
 	PersistentStatChangeEffect.AddPersistentStatChange(eStat_Mobility, default.SHIELD_MOBILITY_PENALTY);
+	PersistentStatChangeEffect.AddPersistentStatChange(eStat_Offense, default.SHIELD_AIM_PENALTY);
 	Template.AddTargetEffect(PersistentStatChangeEffect);
 	Template.SetUIStatMarkup(class'XLocalizedData'.default.MobilityLabel, eStat_Mobility, default.SHIELD_MOBILITY_PENALTY);
 

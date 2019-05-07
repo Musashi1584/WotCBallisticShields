@@ -36,10 +36,8 @@ static function UpdateStorage()
 				NewItemState = ItemTemplates[i].CreateInstanceFromTemplate(NewGameState);
 				NewGameState.AddStateObject(NewItemState);
 				XComHQ.AddItemToHQInventory(NewItemState);
-				History.AddGameStateToHistory(NewGameState);
 			} else {
 				`Log(ItemTemplates[i].GetItemFriendlyName() @ " found, skipping inventory add",, 'WotCBallisticShields');
-				History.CleanupPendingGameState(NewGameState);
 			}
 		}
 	}
@@ -47,7 +45,8 @@ static function UpdateStorage()
 	// Check Tier 2 & 3 for running campaigns that already bought the shields
 	AddHigherTiers('BallisticShield_MG', 'MediumPlatedArmor', XComHQ, NewGameState);
 	AddHigherTiers('BallisticShield_BM', 'MediumPoweredArmor', XComHQ, NewGameState);
-	//schematics should be handled already, as the BuildItem UI draws from ItemTemplates, which are automatically loaded
+	
+	History.AddGameStateToHistory(NewGameState);
 }
 
 static function AddHigherTiers(
@@ -76,14 +75,12 @@ static function AddHigherTiers(
 			NewItemState = ItemTemplate.CreateInstanceFromTemplate(NewGameState);
 			NewGameState.AddStateObject(NewItemState);
 			XComHQ.AddItemToHQInventory(NewItemState);
-			History.AddGameStateToHistory(NewGameState);
 		} else if(XComHQ.HasItem(ItemTemplate) && !XComHQ.HasItem(CheckItemTemplate)) {
 			NewItemState = ItemTemplate.CreateInstanceFromTemplate(NewGameState);
 			XComHQ.RemoveItemFromInventory(NewGameState, NewItemState.GetReference(), 1);
 			`Log(ItemTemplate.GetItemFriendlyName() @ " removed because coressponding tier not unlocked",, 'WotCBallisticShields');
 		} else {
 			`Log(ItemTemplate.GetItemFriendlyName() @ " found or not unlocked yet, skipping inventory add",, 'WotCBallisticShields');
-			History.CleanupPendingGameState(NewGameState);
 		}
 	}
 }
@@ -101,11 +98,9 @@ static function WeaponInitialized(XGWeapon WeaponArchetype, XComWeapon Weapon, o
 	UnitState = XComGameState_Unit(`XCOMHISTORY.GetGameStateForObjectID(ItemState.OwnerStateObject.ObjectID));
 	WeaponTemplate = X2WeaponTemplate(ItemState.GetMyTemplate());
 	
-	`LOG(default.Class.Name @ GetFuncName() @ "Spawn" @ WeaponArchetype @ ItemState.GetMyTemplateName() @ Weapon.CustomUnitPawnAnimsets.Length,, 'PrimarySecondaries');
-
-	// @TODO move this to the Shields mod
 	if (HasShieldEquipped(UnitState) && WeaponTemplate.InventorySlot == eInvSlot_PrimaryWeapon)
 	{
+		`LOG(default.Class.Name @ GetFuncName() @ "Spawn" @ WeaponArchetype @ ItemState.GetMyTemplateName() @ Weapon.CustomUnitPawnAnimsets.Length,, 'WotCBallisticShields');
 		Weapon.DefaultSocket = 'R_Hand';
 	}
 }

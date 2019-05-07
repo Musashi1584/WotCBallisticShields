@@ -41,3 +41,16 @@ https://www.patreon.com/musashi1584
 [h1]Mod troubleshooting[/h1]
 https://www.reddit.com/r/xcom2mods/wiki/mod_troubleshooting
 
+[h1]FAQ[/h1]
+
+Vanilla / LW2 Version when?
+Never, at least not from us. Who asks this again will be banned.
+
+How do add this to custom classes?
+Add the following code to the X2SoldierClassTemplate section of the XComClassData.ini of the custom class mod:
+[code]
++AllowedWeapons=(SlotType=eInvSlot_SecondaryWeapon, WeaponType="shield")
+[/code]
+
+Dedicated shield class when?
+As soon as i have time for it.
