@@ -156,7 +156,7 @@ static function bool CanAddItemToInventory_CH(out int bCanAddItem, const EInvent
 		}
 	}
 
-	if (bEvaluate)
+	if ((bEvaluate && CheckGameState != none) || (!bEvaluate && CheckGameState == none))
 		`LOG(GetFuncName() @ WeaponTemplate.DataName @ DisabledReason @ bEvaluate,, 'WotCBallisticShields');
 
 	if(CheckGameState == none)
