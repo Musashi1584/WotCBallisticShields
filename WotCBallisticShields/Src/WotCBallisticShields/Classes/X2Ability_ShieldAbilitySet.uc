@@ -111,6 +111,15 @@ static function X2AbilityTemplate ShieldBash()
 	Template.AddTargetEffect(class'X2StatusEffects'.static.CreateDisorientedStatusEffect(true, , false));
 	//Template.DefaultSourceItemSlot = eInvSlot_SecondaryWeapon;
 
+	Template.CustomFireAnim = 'FF_MeleeShieldBash';
+	Template.CustomFireKillAnim = 'FF_MeleeShieldBash';
+	Template.CustomMovingFireAnim = 'FF_MeleeShieldBash';
+	Template.CustomMovingFireKillAnim = 'FF_MeleeShieldBash';
+	Template.CustomMovingTurnLeftFireAnim = 'FF_MeleeShieldBash';
+	Template.CustomMovingTurnLeftFireKillAnim = 'FF_MeleeShieldBash';
+	Template.CustomMovingTurnRightFireAnim = 'FF_MeleeShieldBash';
+	Template.CustomMovingTurnRightFireKillAnim = 'FF_MeleeShieldBash';
+
 	return Template;
 }
 
