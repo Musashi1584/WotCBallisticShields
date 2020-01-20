@@ -11,18 +11,20 @@ var config int SHIELD_POINTS_BM;
 var config int SHIELD_MOBILITY_PENALTY;
 var config int SHIELD_AIM_PENALTY;
 
+var config bool bLog;
+
 static function array<X2DataTemplate> CreateTemplates()
 {
-local array<X2DataTemplate> Templates;
+	local array<X2DataTemplate> Templates;
 	
-Templates.AddItem(ShieldWall());
-Templates.AddItem(BallisticShield('BallisticShield_CV', default.SHIELD_POINTS_CV));
-Templates.AddItem(BallisticShield('BallisticShield_MG', default.SHIELD_POINTS_MG));
-Templates.AddItem(BallisticShield('BallisticShield_BM', default.SHIELD_POINTS_BM));
-Templates.AddItem(ShieldBash());
-Templates.AddItem(ShieldAnimSet());
+	Templates.AddItem(ShieldWall());
+	Templates.AddItem(BallisticShield('BallisticShield_CV', default.SHIELD_POINTS_CV));
+	Templates.AddItem(BallisticShield('BallisticShield_MG', default.SHIELD_POINTS_MG));
+	Templates.AddItem(BallisticShield('BallisticShield_BM', default.SHIELD_POINTS_BM));
+	Templates.AddItem(ShieldBash());
+	Templates.AddItem(ShieldAnimSet());
 	
-return Templates;
+	return Templates;
 }
 
 static function X2AbilityTemplate ShieldWall()
