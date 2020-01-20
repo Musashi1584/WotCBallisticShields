@@ -67,7 +67,8 @@ static function X2AbilityTemplate BallisticShield(name TemplateName, int ShieldH
 	local X2Effect_PersistentStatChange PersistentStatChangeEffect;
 
 	`CREATE_X2ABILITY_TEMPLATE(Template, TemplateName);
-	Template.IconImage = "img:///UILibrary_PerkIcons.UIPerk_adventshieldbearer_energyshield";
+	//Template.IconImage = "img:///UILibrary_PerkIcons.UIPerk_adventshieldbearer_energyshield";
+	Template.IconImage = "img:///WoTC_Shield_UI.BallisticShield_Icon";
 
 	Template.AbilitySourceName = 'eAbilitySource_Perk';
 	Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_NeverShow;
@@ -109,6 +110,7 @@ static function X2AbilityTemplate ShieldBash()
 	local X2AbilityTemplate                 Template;
 
 	Template = class'X2Ability_RangerAbilitySet'.static.AddSwordSliceAbility('ShieldBash');
+	Template.IconImage = "img:///WoTC_Shield_UI.ShieldBash_Icon";
 
 	Template.AddTargetEffect(class'X2StatusEffects'.static.CreateDisorientedStatusEffect(true, , false));
 	//Template.DefaultSourceItemSlot = eInvSlot_SecondaryWeapon;
