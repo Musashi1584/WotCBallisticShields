@@ -2,7 +2,7 @@ class X2DownloadableContentInfo_WotCBallisticShields extends X2DownloadableConte
 
 static event OnLoadedSavedGame()
 {
-	`Log("Starting OnLoadedSavedGame",, 'WotCBallisticShields');
+	`Log("Starting OnLoadedSavedGame", class'X2Ability_ShieldAbilitySet'.default.bLog, 'WotCBallisticShields');
 	UpdateStorage();
 }
 
@@ -32,12 +32,12 @@ static function UpdateStorage()
 		{
 			if (!XComHQ.HasItem(ItemTemplates[i]))
 			{
-				`Log(ItemTemplates[i].GetItemFriendlyName() @ " not found, adding to inventory",, 'WotCBallisticShields');
+				`Log(ItemTemplates[i].GetItemFriendlyName() @ " not found, adding to inventory", class'X2Ability_ShieldAbilitySet'.default.bLog, 'WotCBallisticShields');
 				NewItemState = ItemTemplates[i].CreateInstanceFromTemplate(NewGameState);
 				NewGameState.AddStateObject(NewItemState);
 				XComHQ.AddItemToHQInventory(NewItemState);
 			} else {
-				`Log(ItemTemplates[i].GetItemFriendlyName() @ " found, skipping inventory add",, 'WotCBallisticShields');
+				`Log(ItemTemplates[i].GetItemFriendlyName() @ " found, skipping inventory add", class'X2Ability_ShieldAbilitySet'.default.bLog, 'WotCBallisticShields');
 			}
 		}
 	}
@@ -57,11 +57,8 @@ static function AddHigherTiers(
 	)
 {
 	local XComGameState_Item NewItemState;
-	local XComGameStateHistory History;
 	local X2ItemTemplate ItemTemplate, CheckItemTemplate;
 	local X2ItemTemplateManager ItemTemplateMgr;
-
-	History = `XCOMHISTORY;
 
 	ItemTemplateMgr = class'X2ItemTemplateManager'.static.GetItemTemplateManager();
 	ItemTemplate = ItemTemplateMgr.FindItemTemplate(Template);
@@ -71,16 +68,16 @@ static function AddHigherTiers(
 		if (!XComHQ.HasItem(ItemTemplate) && 
 			XComHQ.HasItem(CheckItemTemplate))
 		{
-			`Log(ItemTemplate.GetItemFriendlyName() @ " not found, adding to inventory",, 'WotCBallisticShields');
+			`Log(ItemTemplate.GetItemFriendlyName() @ " not found, adding to inventory", class'X2Ability_ShieldAbilitySet'.default.bLog, 'WotCBallisticShields');
 			NewItemState = ItemTemplate.CreateInstanceFromTemplate(NewGameState);
 			NewGameState.AddStateObject(NewItemState);
 			XComHQ.AddItemToHQInventory(NewItemState);
 		} else if(XComHQ.HasItem(ItemTemplate) && !XComHQ.HasItem(CheckItemTemplate)) {
 			NewItemState = ItemTemplate.CreateInstanceFromTemplate(NewGameState);
 			XComHQ.RemoveItemFromInventory(NewGameState, NewItemState.GetReference(), 1);
-			`Log(ItemTemplate.GetItemFriendlyName() @ " removed because coressponding tier not unlocked",, 'WotCBallisticShields');
+			`Log(ItemTemplate.GetItemFriendlyName() @ " removed because coressponding tier not unlocked", class'X2Ability_ShieldAbilitySet'.default.bLog, 'WotCBallisticShields');
 		} else {
-			`Log(ItemTemplate.GetItemFriendlyName() @ " found or not unlocked yet, skipping inventory add",, 'WotCBallisticShields');
+			`Log(ItemTemplate.GetItemFriendlyName() @ " found or not unlocked yet, skipping inventory add", class'X2Ability_ShieldAbilitySet'.default.bLog, 'WotCBallisticShields');
 		}
 	}
 }
@@ -100,7 +97,7 @@ static function WeaponInitialized(XGWeapon WeaponArchetype, XComWeapon Weapon, o
 	
 	if (HasShieldEquipped(UnitState) && WeaponTemplate.InventorySlot == eInvSlot_PrimaryWeapon)
 	{
-		`LOG(default.Class.Name @ GetFuncName() @ "Spawn" @ WeaponArchetype @ ItemState.GetMyTemplateName() @ Weapon.CustomUnitPawnAnimsets.Length,, 'WotCBallisticShields');
+		`LOG(default.Class.Name @ GetFuncName() @ "Spawn" @ WeaponArchetype @ ItemState.GetMyTemplateName() @ Weapon.CustomUnitPawnAnimsets.Length, class'X2Ability_ShieldAbilitySet'.default.bLog, 'WotCBallisticShields');
 		Weapon.DefaultSocket = 'R_Hand';
 	}
 }
@@ -124,40 +121,43 @@ static function bool CanAddItemToInventory_CH(out int bCanAddItem, const EInvent
 	SecondaryWeapon = UnitState.GetSecondaryWeapon();
 	//LocTag = XGParamTag(`XEXPANDCONTEXT.FindTag("XGParam"));
 
-	if (X2WeaponTemplate(SecondaryWeapon.GetMyTemplate()).WeaponCat == 'Shield' &&
-		WeaponTemplate.InventorySlot == eInvSlot_PrimaryWeapon)
+	if (WeaponTemplate != none && PrimaryWeapon != none && SecondaryWeapon != none)
 	{
-		if (class'X2DataStructure_BallisticShields'.default.AllowedPrimaryWeaponCategoriesWithShield.Find(WeaponTemplate.WeaponCat) == INDEX_NONE)
+		if (X2WeaponTemplate(SecondaryWeapon.GetMyTemplate()).WeaponCat == 'Shield' &&
+			WeaponTemplate.InventorySlot == eInvSlot_PrimaryWeapon)
 		{
-			bCanAddItem = 0;
-			//LocTag.StrValue0 = WeaponTemplate.GetLocalizedCategory();
-			DisabledReason = class'UIUtilities_Text'.static.CapsCheckForGermanScharfesS(
-				`XEXPAND.ExpandString(
-					class'XGLocalizedData_BallisticShields'.default.m_strCategoryRestricted
-				)
-			);
-			bEvaluate = true;
+			if (class'X2DataStructure_BallisticShields'.default.AllowedPrimaryWeaponCategoriesWithShield.Find(WeaponTemplate.WeaponCat) == INDEX_NONE)
+			{
+				bCanAddItem = 0;
+				//LocTag.StrValue0 = WeaponTemplate.GetLocalizedCategory();
+				DisabledReason = class'UIUtilities_Text'.static.CapsCheckForGermanScharfesS(
+					`XEXPAND.ExpandString(
+						class'XGLocalizedData_BallisticShields'.default.m_strCategoryRestricted
+					)
+				);
+				bEvaluate = true;
+			}
 		}
-	}
 
-	if (WeaponTemplate.InventorySlot == eInvSlot_SecondaryWeapon &&
-		WeaponTemplate.WeaponCat == 'Shield')
-	{
-		if (class'X2DataStructure_BallisticShields'.default.AllowedPrimaryWeaponCategoriesWithShield.Find(X2WeaponTemplate(PrimaryWeapon.GetMyTemplate()).WeaponCat) == INDEX_NONE)
+		if (WeaponTemplate.InventorySlot == eInvSlot_SecondaryWeapon &&
+			WeaponTemplate.WeaponCat == 'Shield')
 		{
-			bCanAddItem = 0;
-			//LocTag.StrValue0 = X2WeaponTemplate(PrimaryWeapon.GetMyTemplate()).GetLocalizedCategory();
-			DisabledReason = class'UIUtilities_Text'.static.CapsCheckForGermanScharfesS(
-				`XEXPAND.ExpandString(
-					class'XGLocalizedData_BallisticShields'.default.m_strCategoryRestricted
-				)
-			);
-			bEvaluate = true;
+			if (class'X2DataStructure_BallisticShields'.default.AllowedPrimaryWeaponCategoriesWithShield.Find(X2WeaponTemplate(PrimaryWeapon.GetMyTemplate()).WeaponCat) == INDEX_NONE)
+			{
+				bCanAddItem = 0;
+				//LocTag.StrValue0 = X2WeaponTemplate(PrimaryWeapon.GetMyTemplate()).GetLocalizedCategory();
+				DisabledReason = class'UIUtilities_Text'.static.CapsCheckForGermanScharfesS(
+					`XEXPAND.ExpandString(
+						class'XGLocalizedData_BallisticShields'.default.m_strCategoryRestricted
+					)
+				);
+				bEvaluate = true;
+			}
 		}
 	}
 
 	if ((bEvaluate && CheckGameState != none) || (!bEvaluate && CheckGameState == none))
-		`LOG(GetFuncName() @ WeaponTemplate.DataName @ DisabledReason @ bEvaluate,, 'WotCBallisticShields');
+		`LOG(GetFuncName() @ WeaponTemplate.DataName @ DisabledReason @ bEvaluate, class'X2Ability_ShieldAbilitySet'.default.bLog, 'WotCBallisticShields');
 
 	if(CheckGameState == none)
 		return !bEvaluate;
@@ -170,7 +170,7 @@ static function UpdateAnimations(out array<AnimSet> CustomAnimSets, XComGameStat
 	local X2WeaponTemplate PrimaryWeaponTemplate, SecondaryWeaponTemplate;
 	local string AnimSetToLoad;
 
-	if (!UnitState.IsSoldier())
+	if (UnitState == none || !UnitState.IsSoldier())
 	{
 		return;
 	}
@@ -180,7 +180,7 @@ static function UpdateAnimations(out array<AnimSet> CustomAnimSets, XComGameStat
 	
 	if (SecondaryWeaponTemplate.WeaponCat == 'shield')
 	{
-		`LOG(GetFuncName() @ UnitState.GetFullName() @ PrimaryWeaponTemplate.DataName @ SecondaryWeaponTemplate.DataName,, 'WotCBallisticShields');
+		`LOG(GetFuncName() @ UnitState.GetFullName() @ PrimaryWeaponTemplate.DataName @ SecondaryWeaponTemplate.DataName, class'X2Ability_ShieldAbilitySet'.default.bLog, 'WotCBallisticShields');
 
 		switch (PrimaryWeaponTemplate.WeaponCat)
 		{
