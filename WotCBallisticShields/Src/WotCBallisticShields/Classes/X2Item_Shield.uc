@@ -49,7 +49,7 @@ static function X2WeaponTemplate BallisticShield_CV()
 	Template.EquipSound = "StrategyUI_Heavy_Weapon_Equip";
 
 	Template.BaseDamage = default.SHIELD_CV_BASEDAMAGE;
-	Template.Aim = default.SHIELD_CV_AIM;
+	Template.Aim = 0;
 	Template.CritChance = default.SHIELD_CV_CRITCHANCE;
 	Template.iSoundRange = default.SHIELD_CV_ISOUNDRANGE;
 	Template.iEnvironmentDamage = default.SHIELD_CV_IENVIRONMENTDAMAGE;
@@ -71,7 +71,9 @@ static function X2WeaponTemplate BallisticShield_CV()
 
 	AddAbilities(Template, default.SHIELD_CV_ABILITIES);
 	
+	Template.SetUIStatMarkup(class'XLocalizedData'.default.AimLabel,, default.SHIELD_CV_AIM,,, "%");
 	Template.SetUIStatMarkup(class'XLocalizedData'.default.MobilityLabel, eStat_Mobility, class'X2Ability_ShieldAbilitySet'.default.SHIELD_MOBILITY_PENALTY);
+	Template.SetUIStatMarkup(class'XGLocalizedData_BallisticShields'.default.m_strAimPenalty, eStat_Offense, class'X2Ability_ShieldAbilitySet'.default.SHIELD_AIM_PENALTY,,, "%");
 
 	Template.CanBeBuilt = false;
 	Template.StartingItem = true;
@@ -105,7 +107,7 @@ static function X2DataTemplate BallisticShield_MG()
 
 	Template.iRange = 0;
 	Template.BaseDamage = default.SHIELD_MG_BASEDAMAGE;
-	Template.Aim = default.SHIELD_MG_AIM;
+	Template.Aim = 0;
 	Template.CritChance = default.SHIELD_MG_CRITCHANCE;
 	Template.iSoundRange = default.SHIELD_MG_ISOUNDRANGE;
 	Template.iEnvironmentDamage = default.SHIELD_MG_IENVIRONMENTDAMAGE;
@@ -116,7 +118,9 @@ static function X2DataTemplate BallisticShield_MG()
 	Template.CreatorTemplateName = 'MediumPlatedArmor_Schematic'; // The schematic which creates this item
 	Template.BaseItem = 'BallisticShield_CV'; // Which item this will be upgraded from
 	
+	Template.SetUIStatMarkup(class'XLocalizedData'.default.AimLabel,, default.SHIELD_MG_AIM,,, "%");
 	Template.SetUIStatMarkup(class'XLocalizedData'.default.MobilityLabel, eStat_Mobility, class'X2Ability_ShieldAbilitySet'.default.SHIELD_MOBILITY_PENALTY);
+	Template.SetUIStatMarkup(class'XGLocalizedData_BallisticShields'.default.m_strAimPenalty, eStat_Offense, class'X2Ability_ShieldAbilitySet'.default.SHIELD_AIM_PENALTY,,, "%");
 
 	Template.CanBeBuilt = false;
 	Template.bInfiniteItem = true;
@@ -151,7 +155,7 @@ static function X2DataTemplate BallisticShield_BM()
 
 	Template.iRange = 0;
 	Template.BaseDamage = default.SHIELD_BM_BASEDAMAGE;
-	Template.Aim = default.SHIELD_BM_AIM;
+	Template.Aim = 0;
 	Template.CritChance = default.SHIELD_BM_CRITCHANCE;
 	Template.iSoundRange = default.SHIELD_BM_ISOUNDRANGE;
 	Template.iEnvironmentDamage = default.SHIELD_BM_IENVIRONMENTDAMAGE;
@@ -162,8 +166,10 @@ static function X2DataTemplate BallisticShield_BM()
 	Template.CreatorTemplateName = 'MediumPoweredArmor_Schematic'; // The schematic which creates this item
 	Template.BaseItem = 'BallisticShield_MG'; // Which item this will be upgraded from
 
+	Template.SetUIStatMarkup(class'XLocalizedData'.default.AimLabel,, default.SHIELD_BM_AIM,,, "%");
 	Template.SetUIStatMarkup(class'XLocalizedData'.default.MobilityLabel, eStat_Mobility, class'X2Ability_ShieldAbilitySet'.default.SHIELD_MOBILITY_PENALTY);
-	
+	Template.SetUIStatMarkup(class'XGLocalizedData_BallisticShields'.default.m_strAimPenalty, eStat_Offense, class'X2Ability_ShieldAbilitySet'.default.SHIELD_AIM_PENALTY,,, "%");
+
 	Template.CanBeBuilt = false;
 	Template.bInfiniteItem = true;
 	
