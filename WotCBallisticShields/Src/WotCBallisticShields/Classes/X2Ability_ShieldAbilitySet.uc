@@ -58,6 +58,11 @@ static function X2AbilityTemplate ShieldWall()
 
 	Template.OverrideAbilities.AddItem('HunkerDown');
 
+	//	WAR Suit's "Shieldwall" ability. Redundant with *this* Shield Wall.
+	//	Also its OnEffectRemoved it does UnitState.bGeneratesCover = false, effectivelly turning off the X2Effect_GenerateCover in the BallisticShield passive.
+	//	Kinda big deal.
+	Template.OverrideAbilities.AddItem('HighCoverGenerator');	
+
 	return Template;
 }
 
