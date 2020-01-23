@@ -93,20 +93,28 @@ static function WeaponInitialized(XGWeapon WeaponArchetype, XComWeapon Weapon, o
 	}
 
 	UnitState = XComGameState_Unit(`XCOMHISTORY.GetGameStateForObjectID(ItemState.OwnerStateObject.ObjectID));
-	WeaponTemplate = X2WeaponTemplate(ItemState.GetMyTemplate());
-	
-	if (HasShieldEquipped(UnitState) && WeaponTemplate.InventorySlot == eInvSlot_PrimaryWeapon)
+	if (UnitState != none)
 	{
-		`LOG(default.Class.Name @ GetFuncName() @ "Spawn" @ WeaponArchetype @ ItemState.GetMyTemplateName() @ Weapon.CustomUnitPawnAnimsets.Length, class'X2Ability_ShieldAbilitySet'.default.bLog, 'WotCBallisticShields');
-		Weapon.DefaultSocket = 'R_Hand';
+		WeaponTemplate = X2WeaponTemplate(ItemState.GetMyTemplate());
+	
+		if (WeaponTemplate != none && HasShieldEquipped(UnitState) && WeaponTemplate.InventorySlot == eInvSlot_PrimaryWeapon)
+		{
+			`LOG(default.Class.Name @ GetFuncName() @ "Spawn" @ WeaponArchetype @ ItemState.GetMyTemplateName() @ Weapon.CustomUnitPawnAnimsets.Length, class'X2Ability_ShieldAbilitySet'.default.bLog, 'WotCBallisticShields');
+			Weapon.DefaultSocket = 'R_Hand';
+		}
 	}
 }
 
 static function bool HasShieldEquipped(XComGameState_Unit UnitState, optional XComGameState CheckGameState)
 {
-	local X2WeaponTemplate SecondaryWeaponTemplate;
-	SecondaryWeaponTemplate = X2WeaponTemplate(UnitState.GetItemInSlot(eInvSlot_SecondaryWeapon, CheckGameState).GetMyTemplate());
-	return SecondaryWeaponTemplate.WeaponCat == 'shield';
+	local XComGameState_Item	ItemState;
+
+	ItemState = UnitState.GetItemInSlot(eInvSlot_SecondaryWeapon, CheckGameState);
+	if (ItemState != none)
+	{
+		return ItemState.GetWeaponCategory() == 'shield';
+	}
+	return false;
 }
 
 static function bool CanAddItemToInventory_CH(out int bCanAddItem, const EInventorySlot Slot, const X2ItemTemplate ItemTemplate, int Quantity, XComGameState_Unit UnitState, optional XComGameState CheckGameState, optional out string DisabledReason)

@@ -1,2 +1,3 @@
 [XGLocalizedData_BallisticShields]
 m_strCategoryRestricted=WEAPON CANT BE USED WITH SHIELDS
+m_strAimPenalty="AIM PENALTY"

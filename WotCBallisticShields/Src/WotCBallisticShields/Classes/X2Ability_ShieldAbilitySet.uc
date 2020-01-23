@@ -34,6 +34,8 @@ static function X2AbilityTemplate ShieldWall()
 
 	Template = class'X2Ability_DefaultAbilitySet'.static.AddHunkerDownAbility('ShieldWall');
 
+	Template.IconImage = "img:///WoTC_Shield_UI.ShieldWall_Icon";
+
 	if (default.SHIELD_WALL_FREE_ACTION)
 	{
 		Template.AbilityCosts.Length = 0;
@@ -82,7 +84,7 @@ static function X2AbilityTemplate BallisticShield(name TemplateName, int ShieldH
 	ShieldedEffect.BuildPersistentEffect(1, true, false, true, eGameRule_TacticalGameStart);
 	ShieldedEffect.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyHelpText(), Template.IconImage, true, , Template.AbilitySourceName);
 	ShieldedEffect.AddPersistentStatChange(eStat_ShieldHP, ShieldHPAmount);
-	ShieldedEffect.EffectName = "Ballistic_Shield_Effect";	//	Brawler Class depends on this Effect Name, don't change pl0x
+	ShieldedEffect.EffectName = 'Ballistic_Shield_Effect';	//	Brawler Class depends on this Effect Name, don't change pl0x
 	ShieldedEffect.DuplicateResponse = eDupe_Ignore;
 	Template.AddTargetEffect(ShieldedEffect);
 
@@ -97,10 +99,14 @@ static function X2AbilityTemplate BallisticShield(name TemplateName, int ShieldH
 
 	PersistentStatChangeEffect = new class'X2Effect_PersistentStatChange';
 	PersistentStatChangeEffect.BuildPersistentEffect(1, true, false, false);
+	PersistentStatChangeEffect.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyHelpText(), Template.IconImage, false, , Template.AbilitySourceName);
 	PersistentStatChangeEffect.AddPersistentStatChange(eStat_Mobility, default.SHIELD_MOBILITY_PENALTY);
 	PersistentStatChangeEffect.AddPersistentStatChange(eStat_Offense, default.SHIELD_AIM_PENALTY);
 	Template.AddTargetEffect(PersistentStatChangeEffect);
-	Template.SetUIStatMarkup(class'XLocalizedData'.default.MobilityLabel, eStat_Mobility, default.SHIELD_MOBILITY_PENALTY);
+
+	//	UI Stat Markup has no effect on abilities that are not a part of the soldier's skill tree.
+	//Template.SetUIStatMarkup(class'XLocalizedData'.default.MobilityLabel, eStat_Mobility, default.SHIELD_MOBILITY_PENALTY);
+	//Template.SetUIStatMarkup(class'XLocalizedData'.default.AimLabel, eStat_Offense, default.SHIELD_AIM_PENALTY);
 
 	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
 
@@ -132,7 +138,8 @@ static function X2AbilityTemplate ShieldBash()
 static function X2AbilityTemplate ShieldAnimSet()
 {
     local X2AbilityTemplate                 Template;
-    local X2Effect_AdditionalAnimSets        AnimSets;
+    local X2Effect_AdditionalAnimSets       AnimSets;
+	local X2Effect_ShieldAim				ShieldAim;
 
     `CREATE_X2ABILITY_TEMPLATE(Template, 'ShieldAnimSet');
 
@@ -153,6 +160,12 @@ static function X2AbilityTemplate ShieldAnimSet()
     AnimSets.BuildPersistentEffect(1, true, false, false, eGameRule_TacticalGameStart);
     AnimSets.DuplicateResponse = eDupe_Ignore;
     Template.AddTargetEffect(AnimSets);
+
+	//	Gives the token +20 Aim to abilities attached to the shield (the Shield Bash).
+	//	Doing it this way instead of giving Aim directly to the weapon template out of concern for the UI Sat Markup.
+	ShieldAim = new class'X2Effect_ShieldAim';
+	ShieldAim.BuildPersistentEffect(1, true);
+	Template.AddTargetEffect(ShieldAim);
     
     Template.bSkipFireAction = true;
     Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
