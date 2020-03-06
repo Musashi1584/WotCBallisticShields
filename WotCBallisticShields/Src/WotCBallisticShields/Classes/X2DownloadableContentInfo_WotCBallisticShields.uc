@@ -1,9 +1,23 @@
 class X2DownloadableContentInfo_WotCBallisticShields extends X2DownloadableContentInfo;
 
+var config(Content) array<AnimationPoses> m_arrAnimationPoses;
+
 static event OnLoadedSavedGame()
 {
 	`Log("Starting OnLoadedSavedGame", class'X2Ability_ShieldAbilitySet'.default.bLog, 'WotCBallisticShields');
 	UpdateStorage();
+}
+
+static event OnPostTemplatesCreated()
+{
+	local X2Photobooth Photobooth;
+	local int i;
+
+	Photobooth = X2Photobooth(class'Engine'.static.FindClassDefaultObject("XComGame.X2Photobooth"));
+	for (i = 0; i < default.m_arrAnimationPoses.Length; i++)
+	{
+		Photobooth.m_arrAnimationPoses.AddItem(default.m_arrAnimationPoses[i]);
+	}
 }
 
 // ******** HANDLE UPDATING STORAGE ************* //
