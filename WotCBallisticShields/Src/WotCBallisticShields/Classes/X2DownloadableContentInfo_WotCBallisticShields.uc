@@ -111,7 +111,7 @@ static function WeaponInitialized(XGWeapon WeaponArchetype, XComWeapon Weapon, o
 	{
 		WeaponTemplate = X2WeaponTemplate(ItemState.GetMyTemplate());
 	
-		if (WeaponTemplate != none && HasShieldEquipped(UnitState) && WeaponTemplate.InventorySlot == eInvSlot_PrimaryWeapon)
+		if (WeaponTemplate != none && HasShieldEquipped(UnitState) && ItemState.InventorySlot == eInvSlot_PrimaryWeapon)
 		{
 			`LOG(default.Class.Name @ GetFuncName() @ "Spawn" @ WeaponArchetype @ ItemState.GetMyTemplateName() @ Weapon.CustomUnitPawnAnimsets.Length, class'X2Ability_ShieldAbilitySet'.default.bLog, 'WotCBallisticShields');
 			Weapon.DefaultSocket = 'R_Hand';
@@ -131,7 +131,7 @@ static function bool HasShieldEquipped(XComGameState_Unit UnitState, optional XC
 	return false;
 }
 
-static function bool CanAddItemToInventory_CH(out int bCanAddItem, const EInventorySlot Slot, const X2ItemTemplate ItemTemplate, int Quantity, XComGameState_Unit UnitState, optional XComGameState CheckGameState, optional out string DisabledReason)
+static function bool CanAddItemToInventory_CH_Improved(out int bCanAddItem, const EInventorySlot Slot, const X2ItemTemplate ItemTemplate, int Quantity, XComGameState_Unit UnitState, optional XComGameState CheckGameState, optional out string DisabledReason, optional XComGameState_Item ItemState)
 {
 	local X2WeaponTemplate			WeaponTemplate;
 	local bool						bEvaluate;
@@ -143,10 +143,15 @@ static function bool CanAddItemToInventory_CH(out int bCanAddItem, const EInvent
 	SecondaryWeapon = UnitState.GetSecondaryWeapon();
 	//LocTag = XGParamTag(`XEXPANDCONTEXT.FindTag("XGParam"));
 
-	if (WeaponTemplate != none && PrimaryWeapon != none && SecondaryWeapon != none)
+	if (!UnitState.bIgnoreItemEquipRestrictions &&
+		WeaponTemplate != none &&
+		PrimaryWeapon != none &&
+		SecondaryWeapon != none
+	)
 	{
 		if (X2WeaponTemplate(SecondaryWeapon.GetMyTemplate()).WeaponCat == 'Shield' &&
-			WeaponTemplate.InventorySlot == eInvSlot_PrimaryWeapon)
+		    (WeaponTemplate.InventorySlot == eInvSlot_PrimaryWeapon || ItemState.InventorySlot== eInvSlot_PrimaryWeapon)
+		)
 		{
 			if (class'X2DataStructure_BallisticShields'.default.AllowedPrimaryWeaponCategoriesWithShield.Find(WeaponTemplate.WeaponCat) == INDEX_NONE)
 			{
