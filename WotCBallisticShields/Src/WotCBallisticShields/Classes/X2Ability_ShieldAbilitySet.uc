@@ -125,7 +125,6 @@ static function X2AbilityTemplate ShieldBash()
 	Template = class'X2Ability_RangerAbilitySet'.static.AddSwordSliceAbility('ShieldBash');
 	Template.IconImage = "img:///WoTC_Shield_UI.ShieldBash_Icon";
 
-	Template.AddTargetEffect(class'X2StatusEffects'.static.CreateDisorientedStatusEffect(true, , false));
 	//Template.DefaultSourceItemSlot = eInvSlot_SecondaryWeapon;
 
 	Template.CustomFireAnim = 'FF_MeleeShieldBash';
