@@ -141,9 +141,10 @@ static function X2AbilityTemplate ShieldBash()
 
 static function X2AbilityTemplate ShieldAnimSet()
 {
-    local X2AbilityTemplate                 Template;
-    local X2Effect_AdditionalAnimSets       AnimSets;
-	local X2Effect_ShieldAim				ShieldAim;
+    local X2AbilityTemplate						Template;
+    local X2Effect_AdditionalAnimSets			AnimSets;
+	local X2Effect_ShieldAim					ShieldAim;
+	local X2Condition_ExcludeCharacterTemplates	Condition;
 
     `CREATE_X2ABILITY_TEMPLATE(Template, 'ShieldAnimSet');
 
@@ -163,6 +164,11 @@ static function X2AbilityTemplate ShieldAnimSet()
 	AnimSets.AddAnimSetWithPath("AnimSet'WoTC_Shield_Animations.Anims.AS_Shield_Medkit'");
     AnimSets.BuildPersistentEffect(1, true, false, false, eGameRule_TacticalGameStart);
     AnimSets.DuplicateResponse = eDupe_Ignore;
+
+	//	This effect will apply only to units whose character template name is not in the exclusion list.
+	Condition = new class'X2Condition_ExcludeCharacterTemplates';
+	AnimSets.TargetConditions.AddItem(Condition);
+
     Template.AddTargetEffect(AnimSets);
 
 	//	Gives the token +20 Aim to abilities attached to the shield (the Shield Bash).

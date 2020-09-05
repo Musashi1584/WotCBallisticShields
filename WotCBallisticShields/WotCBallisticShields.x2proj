@@ -58,6 +58,9 @@ tags=shields, weapon, item, tank, wotc, war of the chosen</Description>
     <Content Include="Src\WotCBallisticShields\Classes\X2Ability_ShieldAbilitySet.uc">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="Src\WotCBallisticShields\Classes\X2Condition_ExcludeCharacterTemplates.uc">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="Src\WotCBallisticShields\Classes\X2DataStructure_BallisticShields.uc">
       <SubType>Content</SubType>
     </Content>
