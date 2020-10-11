@@ -23,6 +23,7 @@ static function array<X2DataTemplate> CreateTemplates()
 	Templates.AddItem(BallisticShield('BallisticShield_BM', default.SHIELD_POINTS_BM));
 	Templates.AddItem(ShieldBash());
 	Templates.AddItem(ShieldAnimSet());
+	Templates.AddItem(BallisticShield_GenerateCover());	
 	
 	return Templates;
 }
@@ -70,14 +71,13 @@ static function X2AbilityTemplate BallisticShield(name TemplateName, int ShieldH
 {
 	local X2AbilityTemplate Template;
 	local X2Effect_EnergyShield ShieldedEffect;
-	local X2Effect_GenerateCover CoverEffect;
 	local X2Effect_PersistentStatChange PersistentStatChangeEffect;
 
 	`CREATE_X2ABILITY_TEMPLATE(Template, TemplateName);
 	//Template.IconImage = "img:///UILibrary_PerkIcons.UIPerk_adventshieldbearer_energyshield";
 	Template.IconImage = "img:///WoTC_Shield_UI.BallisticShield_Icon";
 
-	Template.AbilitySourceName = 'eAbilitySource_Perk';
+	Template.AbilitySourceName = 'eAbilitySource_Item';
 	Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_NeverShow;
 	Template.Hostility = eHostility_Neutral;
 
@@ -93,15 +93,6 @@ static function X2AbilityTemplate BallisticShield(name TemplateName, int ShieldH
 	ShieldedEffect.DuplicateResponse = eDupe_Ignore;
 	Template.AddTargetEffect(ShieldedEffect);
 
-	CoverEffect = new class'X2Effect_GenerateCover';
-	CoverEffect.EffectName = 'BallisticShield';
-	CoverEffect.bRemoveWhenMoved = false;
-	CoverEffect.bRemoveOnOtherActivation = false;
-	CoverEffect.BuildPersistentEffect(1, true, false, false, eGameRule_PlayerTurnBegin);
-	CoverEffect.CoverType = CoverForce_Low;
-	CoverEffect.DuplicateResponse = eDupe_Allow;
-	Template.AddTargetEffect(CoverEffect);
-
 	PersistentStatChangeEffect = new class'X2Effect_PersistentStatChange';
 	PersistentStatChangeEffect.BuildPersistentEffect(1, true, false, false);
 	PersistentStatChangeEffect.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyHelpText(), Template.IconImage, false, , Template.AbilitySourceName);
@@ -112,6 +103,37 @@ static function X2AbilityTemplate BallisticShield(name TemplateName, int ShieldH
 	//	UI Stat Markup has no effect on abilities that are not a part of the soldier's skill tree.
 	//Template.SetUIStatMarkup(class'XLocalizedData'.default.MobilityLabel, eStat_Mobility, default.SHIELD_MOBILITY_PENALTY);
 	//Template.SetUIStatMarkup(class'XLocalizedData'.default.AimLabel, eStat_Offense, default.SHIELD_AIM_PENALTY);
+
+	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
+
+	return Template;
+}
+
+static function X2AbilityTemplate BallisticShield_GenerateCover()
+{
+	local X2AbilityTemplate Template;
+	local X2Effect_GenerateCover CoverEffect;
+
+	`CREATE_X2ABILITY_TEMPLATE(Template, 'BallisticShield_GenerateCover');
+
+	Template.IconImage = "img:///WoTC_Shield_UI.BallisticShield_Icon";
+
+	Template.AbilitySourceName = 'eAbilitySource_Item';
+	Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_NeverShow;
+	Template.Hostility = eHostility_Neutral;
+
+	Template.AbilityToHitCalc = default.DeadEye;
+	Template.AbilityTargetStyle = default.SelfTarget;
+	Template.AbilityTriggers.AddItem(default.UnitPostBeginPlayTrigger);
+	
+	CoverEffect = new class'X2Effect_GenerateCover';
+	CoverEffect.EffectName = 'BallisticShield';
+	CoverEffect.bRemoveWhenMoved = false;
+	CoverEffect.bRemoveOnOtherActivation = false;
+	CoverEffect.BuildPersistentEffect(1, true, false, false, eGameRule_PlayerTurnBegin);
+	CoverEffect.CoverType = CoverForce_Low;
+	CoverEffect.DuplicateResponse = eDupe_Allow;
+	Template.AddTargetEffect(CoverEffect);
 
 	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
 
