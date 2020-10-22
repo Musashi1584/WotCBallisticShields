@@ -23,6 +23,7 @@ static function array<X2DataTemplate> CreateTemplates()
 	Templates.AddItem(BallisticShield('BallisticShield_BM', default.SHIELD_POINTS_BM));
 	Templates.AddItem(ShieldBash());
 	Templates.AddItem(ShieldAnimSet());
+	Templates.AddItem(BallisticShield_GenerateCover());	
 	
 	return Templates;
 }
@@ -70,14 +71,13 @@ static function X2AbilityTemplate BallisticShield(name TemplateName, int ShieldH
 {
 	local X2AbilityTemplate Template;
 	local X2Effect_EnergyShield ShieldedEffect;
-	local X2Effect_GenerateCover CoverEffect;
 	local X2Effect_PersistentStatChange PersistentStatChangeEffect;
 
 	`CREATE_X2ABILITY_TEMPLATE(Template, TemplateName);
 	//Template.IconImage = "img:///UILibrary_PerkIcons.UIPerk_adventshieldbearer_energyshield";
 	Template.IconImage = "img:///WoTC_Shield_UI.BallisticShield_Icon";
 
-	Template.AbilitySourceName = 'eAbilitySource_Perk';
+	Template.AbilitySourceName = 'eAbilitySource_Item';
 	Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_NeverShow;
 	Template.Hostility = eHostility_Neutral;
 
@@ -92,15 +92,6 @@ static function X2AbilityTemplate BallisticShield(name TemplateName, int ShieldH
 	ShieldedEffect.EffectName = 'Ballistic_Shield_Effect';	//	Brawler Class depends on this Effect Name, don't change pl0x
 	ShieldedEffect.DuplicateResponse = eDupe_Ignore;
 	Template.AddTargetEffect(ShieldedEffect);
-
-	CoverEffect = new class'X2Effect_GenerateCover';
-	CoverEffect.EffectName = 'BallisticShield';
-	CoverEffect.bRemoveWhenMoved = false;
-	CoverEffect.bRemoveOnOtherActivation = false;
-	CoverEffect.BuildPersistentEffect(1, true, false, false, eGameRule_PlayerTurnBegin);
-	CoverEffect.CoverType = CoverForce_Low;
-	CoverEffect.DuplicateResponse = eDupe_Allow;
-	Template.AddTargetEffect(CoverEffect);
 
 	PersistentStatChangeEffect = new class'X2Effect_PersistentStatChange';
 	PersistentStatChangeEffect.BuildPersistentEffect(1, true, false, false);
@@ -118,6 +109,37 @@ static function X2AbilityTemplate BallisticShield(name TemplateName, int ShieldH
 	return Template;
 }
 
+static function X2AbilityTemplate BallisticShield_GenerateCover()
+{
+	local X2AbilityTemplate Template;
+	local X2Effect_GenerateCover CoverEffect;
+
+	`CREATE_X2ABILITY_TEMPLATE(Template, 'BallisticShield_GenerateCover');
+
+	Template.IconImage = "img:///WoTC_Shield_UI.BallisticShield_Icon";
+
+	Template.AbilitySourceName = 'eAbilitySource_Item';
+	Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_NeverShow;
+	Template.Hostility = eHostility_Neutral;
+
+	Template.AbilityToHitCalc = default.DeadEye;
+	Template.AbilityTargetStyle = default.SelfTarget;
+	Template.AbilityTriggers.AddItem(default.UnitPostBeginPlayTrigger);
+	
+	CoverEffect = new class'X2Effect_GenerateCover';
+	CoverEffect.EffectName = 'BallisticShield';
+	CoverEffect.bRemoveWhenMoved = false;
+	CoverEffect.bRemoveOnOtherActivation = false;
+	CoverEffect.BuildPersistentEffect(1, true, false, false, eGameRule_PlayerTurnBegin);
+	CoverEffect.CoverType = CoverForce_Low;
+	CoverEffect.DuplicateResponse = eDupe_Allow;
+	Template.AddTargetEffect(CoverEffect);
+
+	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
+
+	return Template;
+}
+
 static function X2AbilityTemplate ShieldBash()
 {
 	local X2AbilityTemplate                 Template;
@@ -125,7 +147,6 @@ static function X2AbilityTemplate ShieldBash()
 	Template = class'X2Ability_RangerAbilitySet'.static.AddSwordSliceAbility('ShieldBash');
 	Template.IconImage = "img:///WoTC_Shield_UI.ShieldBash_Icon";
 
-	Template.AddTargetEffect(class'X2StatusEffects'.static.CreateDisorientedStatusEffect(true, , false));
 	//Template.DefaultSourceItemSlot = eInvSlot_SecondaryWeapon;
 
 	Template.CustomFireAnim = 'FF_MeleeShieldBash';
@@ -142,9 +163,10 @@ static function X2AbilityTemplate ShieldBash()
 
 static function X2AbilityTemplate ShieldAnimSet()
 {
-    local X2AbilityTemplate                 Template;
-    local X2Effect_AdditionalAnimSets       AnimSets;
-	local X2Effect_ShieldAim				ShieldAim;
+    local X2AbilityTemplate						Template;
+    local X2Effect_AdditionalAnimSets			AnimSets;
+	local X2Effect_ShieldAim					ShieldAim;
+	local X2Condition_ExcludeCharacterTemplates	Condition;
 
     `CREATE_X2ABILITY_TEMPLATE(Template, 'ShieldAnimSet');
 
@@ -164,6 +186,11 @@ static function X2AbilityTemplate ShieldAnimSet()
 	AnimSets.AddAnimSetWithPath("AnimSet'WoTC_Shield_Animations.Anims.AS_Shield_Medkit'");
     AnimSets.BuildPersistentEffect(1, true, false, false, eGameRule_TacticalGameStart);
     AnimSets.DuplicateResponse = eDupe_Ignore;
+
+	//	This effect will apply only to units whose character template name is not in the exclusion list.
+	Condition = new class'X2Condition_ExcludeCharacterTemplates';
+	AnimSets.TargetConditions.AddItem(Condition);
+
     Template.AddTargetEffect(AnimSets);
 
 	//	Gives the token +20 Aim to abilities attached to the shield (the Shield Bash).

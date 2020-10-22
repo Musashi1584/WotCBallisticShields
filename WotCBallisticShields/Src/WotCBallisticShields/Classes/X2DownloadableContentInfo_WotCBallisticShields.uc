@@ -1,6 +1,7 @@
 class X2DownloadableContentInfo_WotCBallisticShields extends X2DownloadableContentInfo;
 
 var config(Content) array<AnimationPoses> m_arrAnimationPoses;
+var config(Shields) array<name> IgnoreCharacterTemplates;
 
 static event OnLoadedSavedGame()
 {
@@ -107,7 +108,7 @@ static function WeaponInitialized(XGWeapon WeaponArchetype, XComWeapon Weapon, o
 	}
 
 	UnitState = XComGameState_Unit(`XCOMHISTORY.GetGameStateForObjectID(ItemState.OwnerStateObject.ObjectID));
-	if (UnitState != none)
+	if (UnitState != none && default.IgnoreCharacterTemplates.Find(UnitState.GetMyTemplateName()) == INDEX_NONE)
 	{
 		WeaponTemplate = X2WeaponTemplate(ItemState.GetMyTemplate());
 	
@@ -146,7 +147,8 @@ static function bool CanAddItemToInventory_CH_Improved(out int bCanAddItem, cons
 	if (!UnitState.bIgnoreItemEquipRestrictions &&
 		WeaponTemplate != none &&
 		PrimaryWeapon != none &&
-		SecondaryWeapon != none
+		SecondaryWeapon != none &&
+		default.IgnoreCharacterTemplates.Find(UnitState.GetMyTemplateName()) == INDEX_NONE
 	)
 	{
 		if (X2WeaponTemplate(SecondaryWeapon.GetMyTemplate()).WeaponCat == 'Shield' &&
@@ -197,7 +199,7 @@ static function UpdateAnimations(out array<AnimSet> CustomAnimSets, XComGameStat
 	local X2WeaponTemplate PrimaryWeaponTemplate, SecondaryWeaponTemplate;
 	local string AnimSetToLoad;
 
-	if (UnitState == none || !UnitState.IsSoldier())
+	if (UnitState == none || !UnitState.IsSoldier() || default.IgnoreCharacterTemplates.Find(UnitState.GetMyTemplateName()) != INDEX_NONE)
 	{
 		return;
 	}

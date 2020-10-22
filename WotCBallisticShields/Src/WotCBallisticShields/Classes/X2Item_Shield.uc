@@ -70,6 +70,8 @@ static function X2WeaponTemplate BallisticShield_CV()
 	Template.DamageTypeTemplateName = 'Melee';
 
 	AddAbilities(Template, default.SHIELD_CV_ABILITIES);
+
+	Template.BonusWeaponEffects.AddItem(class'X2StatusEffects'.static.CreateDisorientedStatusEffect(true, , false));
 	
 	Template.SetUIStatMarkup(class'XLocalizedData'.default.AimLabel,, default.SHIELD_CV_AIM,,, "%");
 	Template.SetUIStatMarkup(class'XLocalizedData'.default.MobilityLabel, eStat_Mobility, class'X2Ability_ShieldAbilitySet'.default.SHIELD_MOBILITY_PENALTY);
@@ -114,6 +116,8 @@ static function X2DataTemplate BallisticShield_MG()
 	Template.BaseDamage.DamageType='Melee';
 
 	AddAbilities(Template, default.SHIELD_MG_ABILITIES);
+
+	Template.BonusWeaponEffects.AddItem(class'X2StatusEffects'.static.CreateDisorientedStatusEffect(true, , false));
 
 	Template.CreatorTemplateName = 'MediumPlatedArmor_Schematic'; // The schematic which creates this item
 	Template.BaseItem = 'BallisticShield_CV'; // Which item this will be upgraded from
@@ -162,6 +166,8 @@ static function X2DataTemplate BallisticShield_BM()
 	Template.BaseDamage.DamageType='Melee';
 
 	AddAbilities(Template, default.SHIELD_BM_ABILITIES);
+
+	Template.BonusWeaponEffects.AddItem(class'X2StatusEffects'.static.CreateDisorientedStatusEffect(true, , false));
 	
 	Template.CreatorTemplateName = 'MediumPoweredArmor_Schematic'; // The schematic which creates this item
 	Template.BaseItem = 'BallisticShield_MG'; // Which item this will be upgraded from
