@@ -15,23 +15,46 @@ function GetToHitModifiers(XComGameState_Effect EffectState, XComGameState_Unit 
 			WeaponTemplate = X2WeaponTemplate(SourceWeapon.GetMyTemplate());
 			if (WeaponTemplate != none)
 			{
-				switch (WeaponTemplate.WeaponTech)
+				if (WeaponTemplate.WeaponCat == 'shield')
 				{
-					case 'conventional':
-						ShotModifier.Value = class'X2Item_Shield'.default.SHIELD_CV_AIM;
-						break;
-					case 'magnetic':
-						ShotModifier.Value = class'X2Item_Shield'.default.SHIELD_MG_AIM;
-						break;
-					case 'beam':
-						ShotModifier.Value = class'X2Item_Shield'.default.SHIELD_BM_AIM;
-						break;
-					default:
-						return;
-				}	
-				ShotModifier.ModType = eHit_Success;
-				ShotModifier.Reason = class'XLocalizedData'.default.WeaponAimBonus;
-				ShotModifiers.AddItem(ShotModifier);
+					switch (WeaponTemplate.WeaponTech)
+					{
+						case 'conventional':
+							ShotModifier.Value = class'X2Item_Shield'.default.SHIELD_CV_AIM;
+							break;
+						case 'magnetic':
+							ShotModifier.Value = class'X2Item_Shield'.default.SHIELD_MG_AIM;
+							break;
+						case 'beam':
+							ShotModifier.Value = class'X2Item_Shield'.default.SHIELD_BM_AIM;
+							break;
+						default:
+							return;
+					}	
+				}
+				else if (WeaponTemplate.WeaponCat == 'spark_shield')
+				{
+					switch (WeaponTemplate.WeaponTech)
+					{
+						case 'conventional':
+							ShotModifier.Value = class'X2Item_Shield'.default.SPARK_SHIELD_CV_AIM;
+							break;
+						case 'magnetic':
+							ShotModifier.Value = class'X2Item_Shield'.default.SPARK_SHIELD_MG_AIM;
+							break;
+						case 'beam':
+							ShotModifier.Value = class'X2Item_Shield'.default.SPARK_SHIELD_BM_AIM;
+							break;
+						default:
+							return;
+					}
+				}
+				if (ShotModifier.Value != 0)
+				{
+					ShotModifier.ModType = eHit_Success;
+					ShotModifier.Reason = class'XLocalizedData'.default.WeaponAimBonus;
+					ShotModifiers.AddItem(ShotModifier);
+				}
 			}
 		}
 	}

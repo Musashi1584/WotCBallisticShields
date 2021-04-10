@@ -119,8 +119,9 @@ static function X2AbilityTemplate BallisticShield(name TemplateName, int ShieldH
 
 static function X2AbilityTemplate BallisticShield_GenerateCover()
 {
-	local X2AbilityTemplate Template;
-	local X2Effect_GenerateCover CoverEffect;
+	local X2AbilityTemplate			Template;
+	local X2Effect_GenerateCover	CoverEffect;
+	local X2Effect_ShieldAim		ShieldAim;
 
 	`CREATE_X2ABILITY_TEMPLATE(Template, 'BallisticShield_GenerateCover');
 
@@ -142,6 +143,14 @@ static function X2AbilityTemplate BallisticShield_GenerateCover()
 	CoverEffect.CoverType = CoverForce_Low;
 	CoverEffect.DuplicateResponse = eDupe_Allow;
 	Template.AddTargetEffect(CoverEffect);
+
+	//	Gives the token +20 Aim to abilities attached to the shield (the Shield Bash).
+	//	Doing it this way instead of giving Aim directly to the weapon template out of concern for the UI Sat Markup.
+	//	The markup must be applied by this secondary weapon so the player can clearly see carrying a shield 
+	//	will apply the aim penalty to the soldier.
+	ShieldAim = new class'X2Effect_ShieldAim';
+	ShieldAim.BuildPersistentEffect(1, true);
+	Template.AddTargetEffect(ShieldAim);
 
 	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
 
@@ -177,7 +186,6 @@ static function X2AbilityTemplate ShieldAnimSet()
 {
     local X2AbilityTemplate						Template;
     local X2Effect_AdditionalAnimSets			AnimSets;
-	local X2Effect_ShieldAim					ShieldAim;
 	local X2Condition_ExcludeCharacterTemplates	Condition;
 
     `CREATE_X2ABILITY_TEMPLATE(Template, 'ShieldAnimSet');
@@ -203,14 +211,6 @@ static function X2AbilityTemplate ShieldAnimSet()
 	AnimSets.TargetConditions.AddItem(Condition);
 
     Template.AddTargetEffect(AnimSets);
-
-	//	Gives the token +20 Aim to abilities attached to the shield (the Shield Bash).
-	//	Doing it this way instead of giving Aim directly to the weapon template out of concern for the UI Sat Markup.
-	//	The markup must be applied by this secondary weapon so the player can clearly see carrying a shield 
-	//	will apply the aim penalty to the soldier.
-	ShieldAim = new class'X2Effect_ShieldAim';
-	ShieldAim.BuildPersistentEffect(1, true);
-	Template.AddTargetEffect(ShieldAim);
     
     Template.bSkipFireAction = true;
     Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
