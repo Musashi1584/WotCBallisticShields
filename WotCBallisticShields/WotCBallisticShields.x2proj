@@ -9,6 +9,7 @@ tags=shields, weapon, item, tank, wotc, war of the chosen</Description>
     <SteamPublishID>0</SteamPublishID>
     <AssemblyName>WotCBallisticShields</AssemblyName>
     <RootNamespace>WotCBallisticShields</RootNamespace>
+    <ProjectGuid>{278470fa-8044-4c43-8040-081bf71f1b55}</ProjectGuid>
   </PropertyGroup>
   <ItemGroup>
     <Folder Include="Config\" />
@@ -26,6 +27,9 @@ tags=shields, weapon, item, tank, wotc, war of the chosen</Description>
       <SubType>Content</SubType>
     </Content>
     <Content Include="Config\XComGameData.ini">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Config\XComShieldAttachmentsSetup.ini">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Config\XComShields.ini">
@@ -46,6 +50,9 @@ tags=shields, weapon, item, tank, wotc, war of the chosen</Description>
     <Content Include="Content\WoTC_Shield_UI.upk">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="Content\WoTC_Spark_Shields.upk">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="Localization\WotCBallisticShields.int">
       <SubType>Content</SubType>
     </Content>
@@ -55,6 +62,9 @@ tags=shields, weapon, item, tank, wotc, war of the chosen</Description>
     <Content Include="Config\XComEngine.ini" />
     <Content Include="Config\XComGame.ini" />
     <Content Include="Localization\XComGame.int" />
+    <Content Include="Src\WotCBallisticShields\Classes\AnimNotify_ShieldAnimation.uc">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="Src\WotCBallisticShields\Classes\X2Ability_ShieldAbilitySet.uc">
       <SubType>Content</SubType>
     </Content>
@@ -69,6 +79,9 @@ tags=shields, weapon, item, tank, wotc, war of the chosen</Description>
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\WotCBallisticShields\Classes\X2Effect_ShieldWall.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\WotCBallisticShields\Classes\X2EventListener_Shields.uc">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\WotCBallisticShields\Classes\X2Item_Shield.uc">
