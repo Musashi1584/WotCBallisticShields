@@ -39,8 +39,10 @@ static function EventListenerReturn ListenerEventFunction(Object EventData, Obje
 	{
 	case 'shield':
 		Tuple.Data[0].s = class'XGLocalizedData_BallisticShields'.default.m_strShieldCategory;
+		return ELR_NoInterrupt;
 	case 'spark_shield':
 		Tuple.Data[0].s = class'XGLocalizedData_BallisticShields'.default.m_strSparkShieldCategory;
+		return ELR_NoInterrupt;
 	default:
 		return ELR_NoInterrupt;
 	}
